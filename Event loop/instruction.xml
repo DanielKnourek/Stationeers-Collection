@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>133902740798280995</DateTime>
+  <GameVersion>0.2.5499.24517</GameVersion>
+  <Title>Event loop test</Title>
+  <Description>v1.0.0​</Description>
+  <Author>Kdandikk</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias time r14
+alias spCopy r15
+alias virtMem0 r5
+alias virtMem1 r6
+s db Setting 11111111 # TODO: remove logging
+
+lbn time HASH("StopWatch") HASH("UTC") Time Minimum # initial time
+
+move r5 5
+move r6 doAFlip
+jal initTask
+
+move r5 0
+move r6 doAFlip2 
+jal initTask 
+
+MainLoop:
+lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
+
+move spCopy sp
+
+eventLoop:
+pop r0 #
+blt time r0 continue
+move r13 sp
+sll sp sp 5
+add sp sp 33
+peek r0
+
+move r1 12
+add sp sp 8
+LoadSubroutineMem:
+pop rr1
+sub r1 r1 1
+bgeal r1 5 LoadSubroutineMem
+
+jal r0 # returns how much delay in @r0
+add r0 time r0
+
+move r1 5
+SaveSubroutineMem:
+push rr1
+add r1 r1 1
+bleal r1 12 SaveSubroutineMem
+
+move sp r13
+poke sp r0
+continue:
+bnez sp eventLoop
+
+move sp spCopy
+j MainLoop
+
+initTask:
+#r5=firstDelay; r6=Fn Ra;
+add r0 time r5
+push r0
+move spCopy sp
+sll sp sp 5
+push r6
+move sp spCopy
+j ra
+
+doAFlip:
+add virtMem0 virtMem0 2
+s db Setting virtMem0 # TODO: remove logging
+
+ld r0 $1D07E Setting # compute next time
+j ra #END doAFlip
+
+doAFlip2:
+add virtMem0 virtMem0 10
+s db Setting virtMem0 # TODO: remove logging
+
+move r0 5 # compute next time
+j ra#END doAFlip2</Instructions>
+</InstructionData>
