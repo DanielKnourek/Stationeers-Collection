@@ -7,48 +7,48 @@
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias time r15
-    define CallAdressRaOffset 32
-    
-    alias valFn0 r11
-    move valFn0 1
-    alias valFn1 r12
-    move valFn1 2
-    s db Setting 11111111
-    
-    lbn time HASH("StopWatch") HASH("UTC") Time Minimum
-    alias timeFn0 r9
-    add timeFn0 time 4
-    alias timeFn1 r10
-    add timeFn1 time 0
-    MainLoop:
-    lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
-    
-    #mod r1 time 60
-    #s db Setting r1
-    brlt time timeFn0 2
-    jal doAFlip
-    brlt time timeFn1 2
-    jal doAFlip2
-    
-    
-    #mod r1 time 60
-    #round r1 r1
-    #s db Setting r0
-    j MainLoop
-    
-    
-    doAFlip:
-    add valFn0 valFn0 2 #process method
-    s db Setting valFn0
-    
-    
-    ld r0 $1D07E Setting # compute next time
-    add timeFn0 time r0
-    j ra
-    
-    doAFlip2:
-    add valFn1 valFn1 2 #process method
-    s db Setting valFn1
-    add timeFn1 time 10 # compute next time
-    j ra</Instructions>
+define CallAdressRaOffset 32
+
+alias valFn0 r11
+move valFn0 1
+alias valFn1 r12
+move valFn1 2
+s db Setting 11111111
+
+lbn time HASH("StopWatch") HASH("UTC") Time Minimum
+alias timeFn0 r9
+add timeFn0 time 4
+alias timeFn1 r10
+add timeFn1 time 0
+MainLoop:
+lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
+
+#mod r1 time 60
+#s db Setting r1
+brlt time timeFn0 2
+jal doAFlip
+brlt time timeFn1 2
+jal doAFlip2
+
+
+#mod r1 time 60
+#round r1 r1
+#s db Setting r0
+j MainLoop
+
+
+doAFlip:
+add valFn0 valFn0 2 #process method
+s db Setting valFn0
+
+
+ld r0 $1D07E Setting # compute next time
+add timeFn0 time r0
+j ra
+
+doAFlip2:
+add valFn1 valFn1 2 #process method
+s db Setting valFn1
+add timeFn1 time 10 # compute next time
+j ra</Instructions>
 </InstructionData>
