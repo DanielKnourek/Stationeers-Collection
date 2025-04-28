@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>133902740798280995</DateTime>
+  <GameVersion>0.2.5499.24517</GameVersion>
+  <Title>Event loop test</Title>
+  <Description>Stop Watch​</Description>
+  <Author>Kdandikk</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias time r15
+move r14 1
+move r13 2
+s db Setting 11111111
+
+lbn time HASH("StopWatch") HASH("UTC") Time Minimum
+add r1 time 4
+add r0 time 0
+MainLoop:
+lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
+
+#mod r1 time 60
+#s db Setting r1
+brlt time r1 2
+jal doAFlip
+brlt time r2 2
+jal doAFlip2
+
+
+#mod r1 time 60
+#round r1 r1
+#s db Setting r0
+j MainLoop
+
+
+doAFlip:
+add r14 r14 2 #process method
+s db Setting r14
+
+
+ld r0 $1D07E Setting # compute next time
+add r1 time r0
+j ra
+
+doAFlip2:
+add r13 r13 2 #process method
+s db Setting r13
+add r2 time 10 # compute next time
+j ra</Instructions>
+</InstructionData>
