@@ -3,12 +3,11 @@
   <DateTime>133902740798280995</DateTime>
   <GameVersion>0.2.5499.24517</GameVersion>
   <Title>Event loop test</Title>
-  <Description>v0.5​</Description>
+  <Description>v0.6​</Description>
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias time r14
 alias spCopy r15
-define SpOffsetRa 33 #Offset from Sp to find fn addrs
 alias valFn0 r11 #data for doAFlip
 move valFn0 1
 alias valFn1 r12 #data for doAFlip2
@@ -20,15 +19,24 @@ lbn time HASH("StopWatch") HASH("UTC") Time Minimum # initial time
 add r0 time 4 #timeFn0 # define initial times
 push r0
 move spCopy sp
-add sp sp 31 # SpOffsetRa - 2
+sll sp sp 5
+#add sp sp 31 # SpOffsetRa - 2
 push doAFlip
-peek r2 # TODO: remove
 move sp spCopy
 
 add r0 time 0 #timeFn1
 push r0
 move spCopy sp
-add sp sp 31 # SpOffsetRa - 2
+sll sp sp 5
+#add sp sp 31 # SpOffsetRa - 2
+push doAFlip2
+move sp spCopy
+
+add r0 time 0 #timeFn1
+push r0
+move spCopy sp
+sll sp sp 5
+#add sp sp 31 # SpOffsetRa - 2
 push doAFlip2
 move sp spCopy
 
@@ -40,13 +48,30 @@ lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time ev
 move spCopy sp
 
 eventLoop:
-pop r0
+pop r0 #
 brlt time r0 7
-add sp sp SpOffsetRa
+move r13 sp
+sll sp sp 5
+add sp sp 33
 peek r0
-sub sp sp SpOffsetRa
+
+move r1 12
+add sp sp 8
+LoadSubroutineMem:
+pop rr1
+sub r1 r1 1
+bgeal r1 5 LoadSubroutineMem
+
 jal r0 # returns how much delay in @r0
 add r0 time r0
+
+move r1 5
+SaveSubroutineMem:
+push rr1
+add r1 r1 1
+bleal r1 12 SaveSubroutineMem
+
+move sp r13
 poke sp r0
 bnez sp eventLoop
 
