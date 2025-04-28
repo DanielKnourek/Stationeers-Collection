@@ -3,7 +3,7 @@
   <DateTime>133902740798280995</DateTime>
   <GameVersion>0.2.5499.24517</GameVersion>
   <Title>Event loop test</Title>
-  <Description>v0.4​</Description>
+  <Description>v0.5​</Description>
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias time r14
@@ -22,7 +22,7 @@ push r0
 move spCopy sp
 add sp sp 31 # SpOffsetRa - 2
 push doAFlip
-peek r2 # TODO: remove 
+peek r2 # TODO: remove
 move sp spCopy
 
 add r0 time 0 #timeFn1
@@ -38,24 +38,19 @@ lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time ev
 #mod r1 time 60
 #s db Setting r1
 move spCopy sp
-yield # TODO: remove
-pop r0 # BEGIN doAFlip2
-brlt time r0 5
-add sp sp SpOffsetRa
-peek r0
-sub sp sp SpOffsetRa
-jal r0 # END doAFlip2
 
-pop r0 # BEGIN doAFlip
-brlt time r0 5
+eventLoop:
+pop r0
+brlt time r0 7
 add sp sp SpOffsetRa
 peek r0
 sub sp sp SpOffsetRa
-jal r0 # END doAFlip
+jal r0 # returns how much delay in @r0
+add r0 time r0
+poke sp r0
+bnez sp eventLoop
 
 move sp spCopy
-
-
 
 #mod r1 time 60
 #round r1 r1
@@ -68,15 +63,13 @@ add valFn0 valFn0 2
 s db Setting valFn0 # TODO: remove logging
 
 ld r0 $1D07E Setting # compute next time
-add r0 time r0
-poke sp r0
 j ra #END doAFlip
 
 doAFlip2:
 add valFn1 valFn1 10
 s db Setting valFn1 # TODO: remove logging
 
-add r0 time 10 # compute next time
-poke sp r0
+move r0 5 # compute next time
+
 j ra#END doAFlip2</Instructions>
 </InstructionData>
