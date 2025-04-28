@@ -3,10 +3,11 @@
   <DateTime>133902740798280995</DateTime>
   <GameVersion>0.2.5499.24517</GameVersion>
   <Title>Event loop test</Title>
-  <Description>v0.2​</Description>
+  <Description>v0.3​</Description>
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
-  <Instructions>alias time r15
+  <Instructions>alias time r14
+alias spCopy r15
 define CallAdressRaOffset 32
 
 alias valFn0 r11
@@ -16,19 +17,28 @@ move valFn1 2
 s db Setting 11111111
 
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum
-alias timeFn0 r9
-add timeFn0 time 4
-alias timeFn1 r10
-add timeFn1 time 0
+
+add r0 time 4 #timeFn0
+push r0
+add r0 time 0 #timeFn1
+push r0
 MainLoop:
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
 
 #mod r1 time 60
 #s db Setting r1
-brlt time timeFn0 2
-jal doAFlip
-brlt time timeFn1 2
+move spCopy sp
+
+pop r0
+brlt time r0 2
 jal doAFlip2
+
+pop r0
+brlt time r0 2
+jal doAFlip
+
+move sp spCopy
+
 
 
 #mod r1 time 60
@@ -43,12 +53,16 @@ s db Setting valFn0
 
 
 ld r0 $1D07E Setting # compute next time
-add timeFn0 time r0
+add r0 time r0
+push r0
+pop r0
 j ra
 
 doAFlip2:
 add valFn1 valFn1 2 #process method
 s db Setting valFn1
-add timeFn1 time 10 # compute next time
+add r0 time 10 # compute next time
+push r0
+pop r0
 j ra</Instructions>
 </InstructionData>
