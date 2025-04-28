@@ -3,39 +3,55 @@
   <DateTime>133902740798280995</DateTime>
   <GameVersion>0.2.5499.24517</GameVersion>
   <Title>Event loop test</Title>
-  <Description>v0.3​</Description>
+  <Description>v0.4​</Description>
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias time r14
 alias spCopy r15
-define CallAdressRaOffset 32
-
-alias valFn0 r11
+define SpOffsetRa 33 #Offset from Sp to find fn addrs
+alias valFn0 r11 #data for doAFlip
 move valFn0 1
-alias valFn1 r12
-move valFn1 2
+alias valFn1 r12 #data for doAFlip2
+move valFn1 0
 s db Setting 11111111 # TODO: remove logging
 
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum # initial time
 
 add r0 time 4 #timeFn0 # define initial times
 push r0
+move spCopy sp
+add sp sp 31 # SpOffsetRa - 2
+push doAFlip
+peek r2 # TODO: remove 
+move sp spCopy
+
 add r0 time 0 #timeFn1
 push r0
+move spCopy sp
+add sp sp 31 # SpOffsetRa - 2
+push doAFlip2
+move sp spCopy
+
 MainLoop:
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
 
 #mod r1 time 60
 #s db Setting r1
 move spCopy sp
-
+yield # TODO: remove
 pop r0 # BEGIN doAFlip2
-brlt time r0 2
-jal doAFlip2 # END doAFlip2
+brlt time r0 5
+add sp sp SpOffsetRa
+peek r0
+sub sp sp SpOffsetRa
+jal r0 # END doAFlip2
 
 pop r0 # BEGIN doAFlip
-brlt time r0 2
-jal doAFlip # END doAFlip
+brlt time r0 5
+add sp sp SpOffsetRa
+peek r0
+sub sp sp SpOffsetRa
+jal r0 # END doAFlip
 
 move sp spCopy
 
@@ -48,21 +64,19 @@ j MainLoop
 
 
 doAFlip:
-add valFn0 valFn0 2 #process method
+add valFn0 valFn0 2
 s db Setting valFn0 # TODO: remove logging
-
 
 ld r0 $1D07E Setting # compute next time
 add r0 time r0
-push r0
-pop r0
-j ra
+poke sp r0
+j ra #END doAFlip
 
 doAFlip2:
-add valFn1 valFn1 2 #process method
+add valFn1 valFn1 10
 s db Setting valFn1 # TODO: remove logging
+
 add r0 time 10 # compute next time
-push r0
-pop r0
-j ra</Instructions>
+poke sp r0
+j ra#END doAFlip2</Instructions>
 </InstructionData>
