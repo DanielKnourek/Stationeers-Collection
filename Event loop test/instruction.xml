@@ -3,7 +3,7 @@
   <DateTime>133902740798280995</DateTime>
   <GameVersion>0.2.5499.24517</GameVersion>
   <Title>Event loop test</Title>
-  <Description>v0.6.1​</Description>
+  <Description>v0.7.0​</Description>
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias time r14
@@ -14,35 +14,17 @@ s db Setting 11111111 # TODO: remove logging
 
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum # initial time
 
-add r0 time 4 #timeFn0 # define initial times
-push r0
-move spCopy sp
-sll sp sp 5
-#add sp sp 31 # SpOffsetRa - 2
-push doAFlip
-move sp spCopy
+move r5 5
+move r6 doAFlip
+jal initTask
 
-add r0 time 0 #timeFn1
-push r0
-move spCopy sp
-sll sp sp 5
-#add sp sp 31 # SpOffsetRa - 2
-push doAFlip2
-move sp spCopy
-
-add r0 time 0 #timeFn1
-push r0
-move spCopy sp
-sll sp sp 5
-#add sp sp 31 # SpOffsetRa - 2
-push doAFlip2
-move sp spCopy
+move r5 0
+move r6 doAFlip2 
+jal initTask 
 
 MainLoop:
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum #update with current time every loop
 
-#mod r1 time 60
-#s db Setting r1
 move spCopy sp
 
 eventLoop:
@@ -75,12 +57,17 @@ continue:
 bnez sp eventLoop
 
 move sp spCopy
-
-#mod r1 time 60
-#round r1 r1
-#s db Setting r0
 j MainLoop
 
+initTask:
+#r5=firstDelay; r6=Fn Ra;
+add r0 time r5
+push r0
+move spCopy sp
+sll sp sp 5
+push r6
+move sp spCopy
+j ra
 
 doAFlip:
 add virtMem0 virtMem0 2
@@ -94,6 +81,5 @@ add virtMem0 virtMem0 10
 s db Setting virtMem0 # TODO: remove logging
 
 move r0 5 # compute next time
-
 j ra#END doAFlip2</Instructions>
 </InstructionData>
