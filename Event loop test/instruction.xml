@@ -3,15 +3,13 @@
   <DateTime>133902740798280995</DateTime>
   <GameVersion>0.2.5499.24517</GameVersion>
   <Title>Event loop test</Title>
-  <Description>v0.6​</Description>
+  <Description>v0.6.1​</Description>
   <Author>Kdandikk</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias time r14
 alias spCopy r15
-alias valFn0 r11 #data for doAFlip
-move valFn0 1
-alias valFn1 r12 #data for doAFlip2
-move valFn1 0
+alias virtMem0 r5
+alias virtMem1 r6
 s db Setting 11111111 # TODO: remove logging
 
 lbn time HASH("StopWatch") HASH("UTC") Time Minimum # initial time
@@ -49,7 +47,7 @@ move spCopy sp
 
 eventLoop:
 pop r0 #
-brlt time r0 7
+blt time r0 continue
 move r13 sp
 sll sp sp 5
 add sp sp 33
@@ -73,6 +71,7 @@ bleal r1 12 SaveSubroutineMem
 
 move sp r13
 poke sp r0
+continue:
 bnez sp eventLoop
 
 move sp spCopy
@@ -84,15 +83,15 @@ j MainLoop
 
 
 doAFlip:
-add valFn0 valFn0 2
-s db Setting valFn0 # TODO: remove logging
+add virtMem0 virtMem0 2
+s db Setting virtMem0 # TODO: remove logging
 
 ld r0 $1D07E Setting # compute next time
 j ra #END doAFlip
 
 doAFlip2:
-add valFn1 valFn1 10
-s db Setting valFn1 # TODO: remove logging
+add virtMem0 virtMem0 10
+s db Setting virtMem0 # TODO: remove logging
 
 move r0 5 # compute next time
 
