@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>133900887078189305</DateTime>
+  <GameVersion>0.2.5499.24517</GameVersion>
+  <Title>Memory test</Title>
+  <Description>testing if IC has persistent registers​</Description>
+  <Author>Kdandikk</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias mem1 r14
+alias input d0
+
+s db Setting 1
+l r0 input Setting
+yield
+
+s db Setting r0
+
+ble r0 0 display
+save:
+move mem1 r0
+display:
+
+s db Setting mem1</Instructions>
+</InstructionData>
