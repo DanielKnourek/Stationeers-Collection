@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>133900579529883548</DateTime>
+  <GameVersion>0.2.5499.24517</GameVersion>
+  <Title>simple power Transmiter writer</Title>
+  <Description>calculating angle from positions of T&amp;R​</Description>
+  <Author>Kdandikk</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>
+alias tmp r0
+alias tmp2 r1
+alias Tx r4
+alias Ty r5
+alias Tz r6
+alias Rx r7
+alias Ry r8
+alias Rz r9
+alias Dx r10 #delta X
+alias Dy r11 #delta y
+alias Dz r12 #delta z
+alias Th r13 # horizontal angle
+alias Tv r14 # vertical angle
+alias Rh r4
+alias Rv r5
+alias dT d0 # horzintal + vertiacal for Transmitter
+alias dR d1  # horzintal +vertical for Reciever
+
+
+#move Tx -22.043
+#move Ty 3.535
+#move Tz -1.711
+
+#move Rx -23.452
+#move Ry 6.352
+#move Rz -24.709
+s db Setting 28
+bdns dT skipLoadTxyz
+l Tx dT PositionX
+l Ty dT PositionY
+l Tz dT PositionZ
+s db Setting 32
+yield
+skipLoadTxyz:
+
+s db Setting 36
+
+bdns dR skipLoadRxyz
+l Rx dR PositionX
+l Ry dR PositionY
+l Rz dR PositionZ
+s db Setting 42
+yield
+skipLoadRxyz:
+
+sub Dx Rx Tx
+sub Dy Ry Ty
+sub Dz Rz Tz
+
+# Ha angle calc
+div tmp Dx Dz
+#atan2 tmp Dx Dz
+atan tmp tmp
+mul Th tmp rad2deg
+
+# Hv angle calc
+mul tmp Dx Dx
+mul tmp2 Dz Dz
+add tmp tmp tmp2
+sqrt tmp tmp
+div tmp Dy tmp
+atan tmp tmp
+mul tmp tmp rad2deg
+add Tv tmp 90
+
+s db Setting 66
+
+
+bdns dT skipThv
+s dT Horizontal Th
+s dT Vertical Tv
+skipThv:
+s db Setting 74
+
+
+bdns dR end
+add Rh 180 Th
+s dR Horizontal Rh
+sub Rv 180 Tv
+s dR Vertical Rv
+end:
+
+s db Setting Rh</Instructions>
+</InstructionData>
